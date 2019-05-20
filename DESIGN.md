@@ -44,3 +44,5 @@ When the current registrations are displayed all the lessons where the user is r
 
 ##Lesson Data
 the data from the lessons are taken directly from https://usc.uva.nl/sport/groepsfitness/ and parsed into the overview json manually
+
+![](images/Programmeerproject-design.png)
