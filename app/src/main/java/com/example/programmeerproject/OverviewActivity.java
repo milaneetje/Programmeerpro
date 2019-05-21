@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import java.util.ArrayList;
@@ -25,6 +27,12 @@ public class OverviewActivity extends AppCompatActivity implements LessonGetter.
 
     String DayString;
     Integer DayIndex;
+
+    Date date;
+    Date currentDate;
+    String currentDateString;
+    Calendar calendar = Calendar.getInstance();
+
     String[] Days = {"error", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
     @Override
@@ -45,10 +53,25 @@ public class OverviewActivity extends AppCompatActivity implements LessonGetter.
     @Override
     public void gotlessons(ArrayList<Lesson> lessons) {
 
-        Date currentDay = Calendar.getInstance().getTime();
-        String DayString = currentDay.toString();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        currentDate = cal.getTime();
+        currentDateString = currentDate.toString();
+        String [] arrOfcurrentDate = currentDateString.split(" ");
+        currentDateString = arrOfcurrentDate[0] + " " + arrOfcurrentDate[1] + " " + arrOfcurrentDate[2];
+
+        date = cal.getTime();
+        DayString = date.toString();
+        String [] arrOfDayString = DayString.split(" ");
+        DayString = arrOfDayString[0] + " " + arrOfDayString[1] + " " + arrOfDayString[2];
         System.out.println(DayString);
+
         DayIndex = 0;
+
         if (DayString.toLowerCase().contains("mon")) {
             DayIndex = 1;
         } else if (DayString.toLowerCase().contains("tue")) {
@@ -66,8 +89,8 @@ public class OverviewActivity extends AppCompatActivity implements LessonGetter.
         } else {
             Toast.makeText(this, "Dit gaat niet goed", Toast.LENGTH_SHORT).show();
         }
+
         DayText = findViewById(R.id.DayTextview);
-        DayString = Days[DayIndex];
         DayText.setText(DayString);
 
         LessonObjects = lessons;
@@ -80,31 +103,59 @@ public class OverviewActivity extends AppCompatActivity implements LessonGetter.
     }
 
     public void NextDay(View view) {
-        DayIndex = (DayIndex + 1) % 8;
-        if (DayIndex == 0) {
+        calendar.add(Calendar.DATE, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        date = calendar.getTime();
+        DayString = date.toString();
+        String [] arrOfDayString = DayString.split(" ");
+        DayString = arrOfDayString[0] + " " + arrOfDayString[1] + " " + arrOfDayString[2];
+
+        DayText = findViewById(R.id.DayTextview);
+        DayText.setText(DayString);
+
+        if (DayIndex == 7) {
             DayIndex = 1;
-            DayString = Days[DayIndex];
-            DayText.setText(DayString);
-            fillOverview(LessonObjects, DayString);
-        } else {
-            DayString = Days[DayIndex];
-            DayText.setText(DayString);
-            fillOverview(LessonObjects, DayString);
+            fillOverview(LessonObjects, Days[DayIndex]);
+        }
+        else{
+            DayIndex = DayIndex + 1;
+            fillOverview(LessonObjects, Days[DayIndex]);
         }
     }
 
     public void PreviousDay(View view) {
-        DayIndex = (DayIndex - 1);
-        if (DayIndex == 0) {
-            DayIndex = 7;
-            DayString = Days[DayIndex];
-            DayText.setText(DayString);
-            fillOverview(LessonObjects, DayString);
-        } else {
-            DayString = Days[DayIndex];
-            DayText.setText(DayString);
-            fillOverview(LessonObjects, DayString);
+        if (date.equals(currentDate)){
+            Toast.makeText(this, "No lessons available in the past", Toast.LENGTH_SHORT).show();
         }
+        else{
+            calendar.add(Calendar.DATE, -1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            date = calendar.getTime();
+            DayString = date.toString();
+            String [] arrOfDayString = DayString.split(" ");
+            DayString = arrOfDayString[0] + " " + arrOfDayString[1] + " " + arrOfDayString[2];
+
+            DayText = findViewById(R.id.DayTextview);
+            DayText.setText(DayString);
+
+            if (DayIndex == 0) {
+                DayIndex = 7;
+                fillOverview(LessonObjects, Days[DayIndex]);
+            }
+            else{
+                DayIndex = DayIndex - 1;
+                fillOverview(LessonObjects, Days[DayIndex]);
+            }
+        }
+
 
     }
 
@@ -205,6 +256,7 @@ public class OverviewActivity extends AppCompatActivity implements LessonGetter.
         Intent intent = new Intent(OverviewActivity.this, DetailActivity.class);
         intent.putExtra("current_User", currentUser);
         intent.putExtra("current_Lesson", l);
+        intent.putExtra("Date", DayString);
         startActivity(intent);
     }
 }
