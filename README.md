@@ -1,7 +1,7 @@
 # Programmeerproject
 
 ## Real world Problem 
-At my local gym , I saw that one thing that was missing to make it easier for users to sign up for groupfitnessclasses was an application they could use to sign up.
+At my local gym, I saw that one thing that was missing to make it easier for users to sign up for groupfitnessclasses was an application they could use to sign up.
 
 ## Solution
 A centralized app with a up to date interactive timetable where users can see all lessons, find more information like location, time and a description, and register for lessons.
