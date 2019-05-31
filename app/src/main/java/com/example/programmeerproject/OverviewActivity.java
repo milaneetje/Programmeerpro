@@ -8,15 +8,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OverviewActivity extends AppCompatActivity implements LessonGetter.Callback {
 
     ArrayList<Lesson> LessonObjects;
+    ArrayList<Lesson> DayLessonObjects = new ArrayList<>();
 
     User currentUser;
 
@@ -33,7 +35,10 @@ public class OverviewActivity extends AppCompatActivity implements LessonGetter.
     String currentDateString;
     Calendar calendar = Calendar.getInstance();
 
-    String[] Days = {"error", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    String[] Days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+    Map<Button, Lesson> ButtonTimes = new HashMap<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,113 +49,136 @@ public class OverviewActivity extends AppCompatActivity implements LessonGetter.
         //gets the intent from the previous activity
         Intent intent = getIntent();
 
-        //retrieves player
+        //retrieves user
         currentUser = (User) intent.getSerializableExtra("current_User");
 
+        //Gets all lessons
         getter.getLessons(this);
     }
 
     @Override
+    //Function that's called when Lessons are found
     public void gotlessons(ArrayList<Lesson> lessons) {
 
+        //Gets the current Date
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-
         currentDate = cal.getTime();
+
+        //Creates a string for todays date
         currentDateString = currentDate.toString();
-        String [] arrOfcurrentDate = currentDateString.split(" ");
+        String[] arrOfcurrentDate = currentDateString.split(" ");
         currentDateString = arrOfcurrentDate[0] + " " + arrOfcurrentDate[1] + " " + arrOfcurrentDate[2];
 
+        //Gets a second instance of the date that will change through navigation in the activity
         date = cal.getTime();
         DayString = date.toString();
-        String [] arrOfDayString = DayString.split(" ");
+
+        //Creates a string for the 2nd date instance
+        String[] arrOfDayString = DayString.split(" ");
         DayString = arrOfDayString[0] + " " + arrOfDayString[1] + " " + arrOfDayString[2];
-        System.out.println(DayString);
 
-        DayIndex = 0;
-
+        //Finds a integer to the corresponding day in the week
+        DayIndex = 7;
         if (DayString.toLowerCase().contains("mon")) {
-            DayIndex = 1;
+            DayIndex = 0;
         } else if (DayString.toLowerCase().contains("tue")) {
-            DayIndex = 2;
+            DayIndex = 1;
         } else if (DayString.toLowerCase().contains("wed")) {
-            DayIndex = 3;
+            DayIndex = 2;
         } else if (DayString.toLowerCase().contains("thu")) {
-            DayIndex = 4;
+            DayIndex = 3;
         } else if (DayString.toLowerCase().contains("fri")) {
-            DayIndex = 5;
+            DayIndex = 4;
         } else if (DayString.toLowerCase().contains("sat")) {
-            DayIndex = 6;
+            DayIndex = 5;
         } else if (DayString.toLowerCase().contains("sun")) {
-            DayIndex = 7;
+            DayIndex = 6;
         } else {
             Toast.makeText(this, "Dit gaat niet goed", Toast.LENGTH_SHORT).show();
         }
 
+        //Sets a textview with today's date string
         DayText = findViewById(R.id.DayTextview);
         DayText.setText(DayString);
 
+        //Gets all lessons
         LessonObjects = lessons;
+
+        //Calls function fillOverview
         fillOverview(LessonObjects, Days[DayIndex]);
     }
 
     @Override
+    //Function that's called when Lessons are NOT found
     public void gotlessonserror(String message) {
-        Toast.makeText(this, "No lessons available for this day", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    //onClick for the "vooruit" button that changes date by one day forward
     public void NextDay(View view) {
+
+        //Gets an instance of date one day forward
         calendar.add(Calendar.DATE, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-
         date = calendar.getTime();
+
+        //Creates a string for the date formatted as: Day MM dd
         DayString = date.toString();
-        String [] arrOfDayString = DayString.split(" ");
+        String[] arrOfDayString = DayString.split(" ");
         DayString = arrOfDayString[0] + " " + arrOfDayString[1] + " " + arrOfDayString[2];
 
+        //Sets a textview with the datestring
         DayText = findViewById(R.id.DayTextview);
         DayText.setText(DayString);
 
-        if (DayIndex == 7) {
-            DayIndex = 1;
+        //If dayindex equals 6 day is sunday and next dayindex should be 1 again
+        if (DayIndex == 6) {
+            DayIndex = 0;
             fillOverview(LessonObjects, Days[DayIndex]);
-        }
-        else{
+        } else {
             DayIndex = DayIndex + 1;
             fillOverview(LessonObjects, Days[DayIndex]);
         }
     }
 
+    //onClick for the "terug" button that changes date by one day backwards
     public void PreviousDay(View view) {
-        if (date.equals(currentDate)){
+
+        //Makes sure that if date equals today's date, users can't navigate back further
+        if (date.equals(currentDate)) {
             Toast.makeText(this, "No lessons available in the past", Toast.LENGTH_SHORT).show();
         }
-        else{
+        //If date does not equal today's date it HAS to be bigger and users can navigate back to today
+        else {
+            //Gets an instance of date one day forward
             calendar.add(Calendar.DATE, -1);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-
             date = calendar.getTime();
+
+            //Creates a string for the date formatted as: Day MM dd
             DayString = date.toString();
-            String [] arrOfDayString = DayString.split(" ");
+            String[] arrOfDayString = DayString.split(" ");
             DayString = arrOfDayString[0] + " " + arrOfDayString[1] + " " + arrOfDayString[2];
 
+            //If dayindex equals 6 day is sunday and next dayindex should be 1 again
             DayText = findViewById(R.id.DayTextview);
             DayText.setText(DayString);
 
+            //If dayindex equals 0 than current day is monday and we want to navigate to sunday
             if (DayIndex == 0) {
-                DayIndex = 7;
+                DayIndex = 6;
                 fillOverview(LessonObjects, Days[DayIndex]);
-            }
-            else{
+            } else {
                 DayIndex = DayIndex - 1;
                 fillOverview(LessonObjects, Days[DayIndex]);
             }
@@ -159,8 +187,13 @@ public class OverviewActivity extends AppCompatActivity implements LessonGetter.
 
     }
 
+    //Function that fills the overview
     public void fillOverview(ArrayList<Lesson> lessons, String Day) {
 
+        //Makes sure that arraylist DayLessonObjects is empty every time the function is called
+        DayLessonObjects.clear();
+
+        //Sets every button back to invisible before filling the overview
         Integer Buttonindex;
         for (int j = 0; j < 14; j++) {
             for (int k = 0; k < 4; k++) {
@@ -173,90 +206,68 @@ public class OverviewActivity extends AppCompatActivity implements LessonGetter.
             }
         }
 
-        for (int i = 0; i < lessons.size(); i++) {
-            l = lessons.get(i);
+        //Finds all the lessons on the current day
+
+        for (int m = 0; m < lessons.size(); m++) {
+            l = lessons.get(m);
             String DayTxt = l.getDay();
-            String Time = l.getTime();
-            Integer TimeIndex;
 
             if (DayTxt.equals(Day)) {
+                DayLessonObjects.add(l);
+            }
+        }
 
-                if (Time.equals("08:00")) {
-                    TimeIndex = 10;
-                } else if (Time.equals("09:00")) {
-                    TimeIndex = 20;
-                } else if (Time.equals("10:00")) {
-                    TimeIndex = 30;
-                } else if (Time.equals("11:00")) {
-                    TimeIndex = 40;
-                } else if (Time.equals("12:00")) {
-                    TimeIndex = 50;
-                } else if (Time.equals("13:00")) {
-                    TimeIndex = 60;
-                } else if (Time.equals("14:00")) {
-                    TimeIndex = 70;
-                } else if (Time.equals("15:00")) {
-                    TimeIndex = 80;
-                } else if (Time.equals("16:00")) {
-                    TimeIndex = 90;
-                } else if (Time.equals("17:00")) {
-                    TimeIndex = 100;
-                } else if (Time.equals("18:00")) {
-                    TimeIndex = 110;
-                } else if (Time.equals("19:00")) {
-                    TimeIndex = 120;
-                } else if (Time.equals("20:00")) {
-                    TimeIndex = 130;
-                } else if (Time.equals("21:00")) {
-                    TimeIndex = 140;
-                } else {
-                    TimeIndex = 1000;
-                }
+        //For all of the current day's lessons, finds the button by index of time and location
+        for (int i = 0; i < DayLessonObjects.size(); i++) {
+            Lesson l = DayLessonObjects.get(i);
+            String Time = l.getTime();
+            Integer TimeIndex = 0;
 
-                if (TimeIndex.equals(1000)) {
-
-                    Toast.makeText(this, "Time is incompatible", Toast.LENGTH_SHORT).show();
-                } else {
-
-                    String Location = l.getLocation();
-
-                    if (Location.equals("1")) {
-                        TimeIndex = TimeIndex;
-                    } else if (Location.equals("2")) {
-                        TimeIndex = TimeIndex + 1;
-                    } else if (Location.equals("3")) {
-                        TimeIndex = TimeIndex + 2;
-                    } else if (Location.equals("4")) {
-                        TimeIndex = TimeIndex + 3;
-                    }
-
-                    TimeIndex.toString();
-                    String ButtonName = "button" + TimeIndex;
-                    int resID = getResources().getIdentifier(ButtonName, "id", getPackageName());
-
-                    b = findViewById(resID);
-                    b.setVisibility(View.VISIBLE);
-                    b.setText(l.getName());
-                }
+            //converts the time and location string to an integer and calculates the timeindex
+            String[] TimeArray = Time.split(":");
+            Integer TimeInt = Integer.parseInt(TimeArray[0]);
+            Integer LocationInt = Integer.parseInt(l.getLocation());
+            TimeIndex = ((TimeInt - 8) + 1) * 10 + (LocationInt - 1);
+            if(l.getLocation().equals("Conditietraining")){
             }
 
+
+            //Creates a string with which a button can be identified
+            TimeIndex.toString();
+            String ButtonName = "button" + TimeIndex;
+            int resID = getResources().getIdentifier(ButtonName, "id", getPackageName());
+
+            //Finds correct button with the created string, sets text and visibility
+            b = findViewById(resID);
+            b.setVisibility(View.VISIBLE);
+            b.setText(l.getName());
+
+            //Creates a hashmap that contains all of current day's lessons and the corresponding buttons
+            ButtonTimes.put(b, l);
         }
+
     }
 
+    //onClick for lessonbuttons
     public void onClick(View view) {
+
+        //Finds clicked button
         Button button = findViewById(view.getId());
-        String ButtonText = button.getText().toString();
-        for (int i = 0; i < LessonObjects.size(); i++) {
-            l = LessonObjects.get(i);
-            String LessonName = l.getName();
-            if (LessonName.equals(ButtonText)) {
-                break;
+        Lesson lesson;
+
+        for (Map.Entry<Button, Lesson> entry : ButtonTimes.entrySet())
+        {
+            Button b = entry.getKey();
+            //if clicked button matches a button in the hashmap, the corresponding lesson is found
+            if (button.equals(b)) {
+                lesson = entry.getValue();
+                Intent intent = new Intent(OverviewActivity.this, DetailActivity.class);
+                intent.putExtra("current_User", currentUser);
+                intent.putExtra("current_Lesson", lesson);
+                intent.putExtra("Date", DayString);
+                intent.putExtra("Activity_origin", "Overview");
+                startActivity(intent);
             }
         }
-        Intent intent = new Intent(OverviewActivity.this, DetailActivity.class);
-        intent.putExtra("current_User", currentUser);
-        intent.putExtra("current_Lesson", l);
-        intent.putExtra("Date", DayString);
-        startActivity(intent);
     }
 }

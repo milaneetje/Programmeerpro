@@ -68,13 +68,12 @@ public class LessonGetter implements Response.ErrorListener, Response.Listener<J
                 // add class object to list
                 quest.add(l);
             }
-            System.out.println("Tot hier komen we nog.");
 
             callback.gotlessons(quest);
 
             // if failed
         } catch (JSONException e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
 
     }

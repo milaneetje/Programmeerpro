@@ -23,7 +23,7 @@
         android:id="@+id/FaveLessons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your favorite lessons are:"
+        android:text="Je actieve inschrijvingen zijn:"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,69 +32,20 @@
         app:layout_constraintTop_toBottomOf="@+id/UsernameText"
         app:layout_constraintVertical_bias="0.060000002" />
 
-    <Button
-        android:id="@+id/LessonButtonONE"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FaveLessons"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/LessonButtonTWO"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text=""
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LessonButtonONE" />
-
-    <Button
-        android:id="@+id/LessonButtonTHREE"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text=""
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LessonButtonTWO" />
-
-    <Button
-        android:id="@+id/LessonButtonFOUR"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text=""
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LessonButtonTHREE" />
 
     <Button
         android:id="@+id/Overview"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Overview"
         android:onClick="Overview"
+        android:text="Rooster"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.65999997" />
+        app:layout_constraintTop_toBottomOf="@+id/RegistrationDayTimeList"
+        app:layout_constraintVertical_bias="0.050000012" />
 
     <TextView
         android:id="@+id/NoLessonTxT"
@@ -103,8 +54,31 @@
         android:text="TextView"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.39" />
+        app:layout_constraintVertical_bias="0.43" />
+
+    <ListView
+        android:id="@+id/RegistrationDayTimeList"
+        android:layout_width="425dp"
+        android:layout_height="262dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/FaveLessons"
+        app:layout_constraintVertical_bias="0.050000012" />
+
+    <Button
+        android:id="@+id/Userpage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Profiel"
+        android:onClick="Registrations"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Overview"
+        app:layout_constraintVertical_bias="0.050000012" />
 
 </android.support.constraint.ConstraintLayout>

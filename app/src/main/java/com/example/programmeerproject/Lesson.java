@@ -36,4 +36,5 @@ public class Lesson implements Serializable{
     }
 
     public String getLocation(){return Location;}
+
 }
