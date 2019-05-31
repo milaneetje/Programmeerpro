@@ -1,5 +1,8 @@
 # Programmeerproject
 
+# walk through video
+https://youtu.be/mA5YNbwGR9I
+
 ## Real world Problem 
 At my local gym, I saw that one thing that was missing to make it easier for users to sign up for groupfitnessclasses was an application they could use to sign up.
 
